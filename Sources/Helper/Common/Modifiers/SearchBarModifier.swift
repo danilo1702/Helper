@@ -42,7 +42,7 @@ public struct SearchBarModifier: ViewModifier {
                                 }.padding()
                            
                             HStack {
-                                if activeSearchBar {
+                               
                                     ZStack {
                                         HStack {
                                             Image(systemName: CommonStrings.ImagesString.magnifyingGlass)
@@ -68,7 +68,7 @@ public struct SearchBarModifier: ViewModifier {
                                     .onTapGesture {
                                         hidePlaceHolder = true
                                     }
-                                }
+                                
                                 if !textSearch.isEmpty {
                                     Button(action: {
                                         withAnimation(.smooth) {
