@@ -15,10 +15,12 @@ public struct SearchBarModifier: ViewModifier {
     @State var searching: Bool = false
     @State var oldValue: String = ""
     @Binding var remoteConfig: RemoteConfigModelMainView
+    @State var activeSearchBar: Bool = false
     
-    public init(remoteConfig: Binding<RemoteConfigModelMainView> ,textSearch: Binding<String>, completion: @escaping () -> ()) {
+    public init(remoteConfig: Binding<RemoteConfigModelMainView> ,textSearch: Binding<String>, activeSearchBar: Bool, completion: @escaping () -> ()) {
         self._remoteConfig = remoteConfig
         self._textSearch = textSearch
+        self._activeSearchBar = State(initialValue: activeSearchBar)
         self.completion = completion
     }
     
@@ -40,31 +42,32 @@ public struct SearchBarModifier: ViewModifier {
                                 }.padding()
                            
                             HStack {
-                                
-                                ZStack {
-                                    HStack {
-                                        Image(systemName: CommonStrings.ImagesString.magnifyingGlass)
-                                            .padding(EdgeInsets(top: 6, leading: 8, bottom: 6, trailing: -2))
-                                            .foregroundStyle(.gray)
-                                        if !hidePlaceHolder || textSearch.isEmpty{
-                                            TextView(informationModel: TextViewModel(text: remoteConfig.searchBar.placeHolder.text, foregroundColor: Color(hex: remoteConfig.searchBar.placeHolder.foregroundColor), font: .system(size: remoteConfig.searchBar.placeHolder.fontSize.parseToCGFloat())))
+                                if activeSearchBar {
+                                    ZStack {
+                                        HStack {
+                                            Image(systemName: CommonStrings.ImagesString.magnifyingGlass)
+                                                .padding(EdgeInsets(top: 6, leading: 8, bottom: 6, trailing: -2))
                                                 .foregroundStyle(.gray)
+                                            if !hidePlaceHolder || textSearch.isEmpty{
+                                                TextView(informationModel: TextViewModel(text: remoteConfig.searchBar.placeHolder.text, foregroundColor: Color(hex: remoteConfig.searchBar.placeHolder.foregroundColor), font: .system(size: remoteConfig.searchBar.placeHolder.fontSize.parseToCGFloat())))
+                                                    .foregroundStyle(.gray)
+                                            }
+                                            
+                                            Spacer()
                                         }
                                         
-                                        Spacer()
+                                        TextField(CommonStrings.emptyString, text: $textSearch).padding(EdgeInsets(top: 8, leading: 33, bottom: 8, trailing: 5))
+                                        
                                     }
-                                    
-                                    TextField(CommonStrings.emptyString, text: $textSearch).padding(EdgeInsets(top: 8, leading: 33, bottom: 8, trailing: 5))
-                                    
-                                }
-                                .background(
-                                    RoundedRectangle(cornerRadius: 15)
-                                        .strokeBorder(Color(hex: remoteConfig.searchBar.backgroundColor), lineWidth: 0.2)
-                                        .background(Color(hex: remoteConfig.searchBar.backgroundColor)))
-                                .cornerRadius(CGFloat( 15.0))
-                                .padding(.init(top: 20, leading: 20, bottom: 20, trailing: textSearch.isEmpty ? 20 : 10))
-                                .onTapGesture {
-                                    hidePlaceHolder = true
+                                    .background(
+                                        RoundedRectangle(cornerRadius: 15)
+                                            .strokeBorder(Color(hex: remoteConfig.searchBar.backgroundColor), lineWidth: 0.2)
+                                            .background(Color(hex: remoteConfig.searchBar.backgroundColor)))
+                                    .cornerRadius(CGFloat( 15.0))
+                                    .padding(.init(top: 20, leading: 20, bottom: 20, trailing: textSearch.isEmpty ? 20 : 10))
+                                    .onTapGesture {
+                                        hidePlaceHolder = true
+                                    }
                                 }
                                 if !textSearch.isEmpty {
                                     Button(action: {

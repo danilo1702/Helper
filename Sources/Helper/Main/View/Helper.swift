@@ -82,7 +82,7 @@ public struct SupportModuleView: View {
                 }
                 navigationLinks()
             }
-            .addSearchbar(remoteConfig: $configuration, textSearch: $textSearch, completion: {
+            .addSearchbar(remoteConfig: $configuration, textSearch: $textSearch, activeSearchBar: viewModel.searchArticles, completion: {
                 gettingArticles()
             })
             .ignoresSafeArea()
